@@ -48,11 +48,11 @@ class FG_eval {
     // the Solver function below.
     fg[0] = 0;
 
-    int cte_coef = 100;
-    int epsi_coef = 100;
+    int cte_coef = 80;
+    int epsi_coef = 90;
     int v_coef = 3; 
-    int delta_coef = 1;
-    int a_coef = 1;
+    int delta_coef = 3;
+    int a_coef = 3;
     int d_delta_coef = 3;
     int d_a_coef = 3;
 
