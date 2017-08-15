@@ -3,6 +3,38 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+Rubric reflection:
+
+## The Model
+The model used for this project is smiliar to what have been described in the earlier modules i.e. Kinematic Model. In this all dynamic factors like inertia, friction and torque are ignored.
+
+The state for the kinematic model includes the car's co-ordinates - **px** and **py**, orientation - **psi**, velocity - **v**, error in orientation - **epsi** and cross-track error - **cte**.
+
+It also uses two actuaters to update its state: steering angle - **delta** and acceleration - **throttle**. 
+
+The state update consists of the following equations:
+
+      fg[1+x_start+t] = x1 - (x0 + v0 * CppAD::cos(psi0)*dt);
+      fg[1+y_start+t] = y1 - (y0 + v0 * CppAD::sin(psi0)*dt);
+      fg[1+psi_start+t] = psi1 - (psi0 + v0 * delta0/Lf*dt);
+      fg[1+v_start+t] = v1 - (v0 + a0*dt);
+      fg[1+cte_start+t] = cte1  - ((f0 - y0) + (v0 * CppAD::sin(epsi0)*dt));
+      fg[1+epsi_start+t] = epsi1 - ((psi0 - psides0) + v0 * delta0/Lf*dt);
+
+I also made use of propotional coefficients to scale the values properly and have a greater control over tuning the model. I first experimented with the **epsi** and **cte** slightly increasing with the max-speed till the point I got good result for speed of **60**. After that I slowly played with other values to further tune the cars behaviour specially around the corners.
+
+
+## Timestep Length and Elapsed Duration (N & dt)
+I started with  N = 5  and dt = 0.05. These values were not good enough for the track. Since car was not able to see in the future I tried to increase **N** and observe car's behaviour. Similarly, I tried to increase **dt** to 0.1, which is the given latency for this model. By manually experimenting with both the values I settled for **N = 12** and **dt = 0.1**.
+
+## Polynomial Fitting and MPC Preprocessing
+Before fitting polynomial, the waypoints were first transformed from map co-ordinates to car's co-ordinate. And then fitted using a 3rd degree polynomial.
+
+
+## Model Predictive Control with Latency
+To account for real-life situations, latency of 0.1 seconds was introduced to the model. This made the vehicle reaction delayed which was most obvious at corner. To compensate for that I had to tune the vehicle to drive more conservatively.
+
+---
 ## Dependencies
 
 * cmake >= 3.5
